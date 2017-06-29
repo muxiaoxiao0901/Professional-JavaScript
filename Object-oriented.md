@@ -1,0 +1,76 @@
+# 第6章 面向对象的程序设计
+## 6.1 理解对象</br>
+
+```javascript
+ver person = new Object();
+person.name = 'Tom';
+person.age = 23;
+person.job = 'Software Engineer';
+
+person.sayName = function() {
+  alert('this.name');
+}
+```
+几年后，字面量成为创建这种对象的首选
+
+```javascript
+ver person = {
+  person.name = 'Tom';
+  person.age = 23;
+  person.job = 'Software Engineer';
+
+  person.sayName = function() {
+    alert('this.name');
+  }  
+}；
+```
+
+两种情况相同，都有相同的属性和方法，这些属性创建是都带有一些特征值（characteristic），JavaScript通过这些特征值来定义他们的行为。
+
+### 6.1.1 属性类型</br>
+
+特性的内部值，放在两对方括号内表示， 例如[[Enumerable]];    
+ECMAScript 中有两种属性：`数据属性`和`访问其属性`。   
+#### 1.数据属性    
+数据属性包含一个数据值的位置。在这个位置可以读取和写入值。数据属性有四个描述行为的特性。    
+* [[Configurable]]: 表示能否通过delete删除属性从而重新定义属性，能否修改属性的特征值，或者能否把属性修改为访问器属性。   
+* [[Enumerable]]: 表示能否通过for-in循环返回属性。
+* [[Writable]]: 表示能否修改属性的值。   
+* [[Value]]: 包含这个属性的数据值。读取属性值的时候，从这个位置读，写入属性值的时候，把新值保存着这个位置。    
+
+对于直接定义在对象上的属性，默认值为：    
+
+```javascript
+[[Cofigurable]]: ture;
+[[Enumerable]]: ture;
+[[Writable]]: ture;
+[[Value]]: undefined;
+```
+如：
+
+```javascript
+var person = {
+  name: 'Tom';
+};
+```
+这里name属性的[[Value]]特征将被设置为’Tom‘.对这个值的任何修改都将反映在这个位置。   
+要修改属性默认的特征，必须使用Object.defineProperty(); 接收三个参数： 属性所在的对象、属性的名字、一个描述符对象(descriptor)。descriptor对象的属性必须是configurable、enumerable、writable、value。
+
+
+要修改属性默认的特征，必须使用Object.defineProperty(); 接收三个参数： 属性所在的对象、属性的名字、一个描述符对象(descriptor)。descriptor对象的属性必须是configurable、enumerable、writable、value。    
+如
+要修改属性默认的特征，必须使用Object.defineProperty(); 接收三个参数： 属性所在的对象、属性的名字、一个描述符对象(descriptor)。descriptor对象的属性必须是configurable、enumerable、writable、value。   
+如：   
+
+```javascript
+Object.defineProperty(person, 'name', {
+  writable: false,
+  value: 'Tom',
+});
+```
+设置后，这个属性值是是不可修改了，得严格模式下会忽略赋值，严格模式下会报错。      
+不同的是，当将configurable设置为false后，对这个属性调用delete时，非严格模式被忽略，严格模式报错。而且，一旦定义为不可配置，就不能再把它变回可配置了。此时，再调用Object.defineProperty()修改除writable之外的特征，都会报错。   
+`在调用Object.defineProperty()方法创建一个属性时，如果不指定，configurable、enumerable、writable默认为false，使用该函数修改特征值则不会有这样的限制`。
+
+
+
